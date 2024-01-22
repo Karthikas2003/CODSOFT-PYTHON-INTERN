@@ -1,1 +1,62 @@
+import json
+from datetime import datetime
+
+def load_tasks():
+    try:
+        with open('tasks.json', 'r') as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = []
+    return tasks
+
+def save_tasks(tasks):
+    with open('tasks.json', 'w') as file:
+        json.dump(tasks, file, indent=2)
+
+def display_tasks(tasks):
+    if not tasks:
+        print("No tasks found.")
+    else:
+        print("Tasks:")
+        for idx, task in enumerate(tasks, start=1):
+            print(f"{idx}. {task['title']} - {task['date']}")
+
+def add_task(tasks, title):
+    date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    task = {'title': title, 'date': date}
+    tasks.append(task)
+    save_tasks(tasks)
+    print(f"Task '{title}' added successfully.")
+
+def remove_task(tasks, index):
+    try:
+        removed_task = tasks.pop(index - 1)
+        save_tasks(tasks)
+        print(f"Task '{removed_task['title']}' removed successfully.")
+    except IndexError:
+        print("Invalid task index.")
+
+def main():
+    tasks = load_tasks()
+
+    while True:
+        print("\n1. Display Tasks\n2. Add Task\n3. Remove Task\n4. Exit")
+        choice = input("Select an option: ")
+
+        if choice == '1':
+            display_tasks(tasks)
+        elif choice == '2':
+            title = input("Enter task title: ")
+            add_task(tasks, title)
+        elif choice == '3':
+            index = int(input("Enter task index to remove: "))
+            remove_task(tasks, index)
+        elif choice == '4':
+            print("Exiting the To-Do List application.")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
 
