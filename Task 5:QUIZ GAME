@@ -1,1 +1,82 @@
+import random
+
+def load_quiz_questions():
+    # Replace these questions with your own
+    questions = [
+        {
+            "question": "What is the capital of France?",
+            "choices": ["Berlin", "Paris", "Madrid", "Rome"],
+            "correct_answer": "Paris"
+        },
+        {
+            "question": "Which planet is known as the Red Planet?",
+            "choices": ["Mars", "Venus", "Jupiter", "Saturn"],
+            "correct_answer": "Mars"
+        },
+        # Add more questions as needed
+    ]
+    return questions
+
+def display_welcome_message():
+    print("Welcome to the Quiz Game!")
+    print("You will be asked multiple-choice questions. Enter the letter corresponding to your answer.")
+    print("Let's get started!\n")
+
+def present_quiz_question(question):
+    print(question["question"])
+    for i, choice in enumerate(question["choices"], start=1):
+        print(f"{chr(ord('A') + i - 1)}. {choice}")
+    user_answer = input("Your answer: ").upper()
+    return user_answer
+
+def evaluate_answer(user_answer, correct_answer):
+    return user_answer == correct_answer
+
+def display_feedback(is_correct, correct_answer):
+    if is_correct:
+        print("Correct!\n")
+    else:
+        print(f"Incorrect. The correct answer is: {correct_answer}\n")
+
+def calculate_final_score(scores):
+    return sum(scores)
+
+def display_final_results(score):
+    print(f"Your final score is: {score}")
+    if score == 100:
+        print("Perfect! You got all the questions right.")
+    elif score >= 75:
+        print("Great job! You performed well.")
+    elif score >= 50:
+        print("Not bad! You have room for improvement.")
+    else:
+        print("Keep practicing. You can do better next time.")
+
+def play_again():
+    return input("Do you want to play again? (yes/no): ").lower() == "yes"
+
+def quiz_game():
+    questions = load_quiz_questions()
+    scores = []
+
+    while True:
+        display_welcome_message()
+
+        for question in random.sample(questions, len(questions)):
+            user_answer = present_quiz_question(question)
+            is_correct = evaluate_answer(user_answer, question["correct_answer"])
+            scores.append(is_correct)
+            display_feedback(is_correct, question["correct_answer"])
+
+        final_score = calculate_final_score(scores)
+        display_final_results(final_score)
+
+        if not play_again():
+            print("Thanks for playing. Goodbye!")
+            break
+        else:
+            scores = []  # Reset scores for a new game
+
+if __name__ == "__main__":
+    quiz_game()
 
