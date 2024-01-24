@@ -1,42 +1,56 @@
-import requests
-import json
+import random
 
-def get_weather_data(city):
-    # Use OpenWeatherMap API to get weather data
-    api_key = "YOUR_API_KEY"
-    base_url = "http://api.openweathermap.org/data/2.5/weather?"
-    complete_url = base_url + "appid=" + api_key + "&q=" + city
-    
-    # Make an API request and retrieve weather data
-    response = requests.get(complete_url)
-    data = response.json()
-    
-    # Check if the request was successful
-    if data["cod"] != "404":
-        # Check if the weather key is present
-        if "weather" in data:
-            # Extract relevant weather information
-            main = data["weather"][0]["main"]
-            description = data["weather"][0]["description"]
-            temperature = data["main"]["temp"] - 273.15
-            humidity = data["main"]["humidity"]
-            wind_speed = data["wind"]["speed"]
-            
-            # Display the weather information
-            print(f"City: {city}")
-            print(f"Weather: {main}")
-            print(f"Description: {description}")
-            print(f"Temperature: {temperature} °C")
-            print(f"Humidity: {humidity}%")
-            print(f"Wind Speed: {wind_speed} m/s")
+class QuizGame:
+    def __init__(self, questions):
+        self.questions = questions
+        self.score = 0
+
+    def load_questions(self):
+        # Load your quiz questions here
+        # Each question should be a dictionary with 'question', 'choices', and 'correct_answer' keys
+        # Example: {'question': 'What is the capital of France?', 'choices': ['A', 'B', 'C', 'D'], 'correct_answer': 'C'}
+        pass
+
+    def present_question(self, question):
+        print(question['question'])
+        for i, choice in enumerate(question['choices'], start=1):
+            print(f"{i}. {choice}")
+
+        user_answer = input("Enter the number of your choice: ")
+        return user_answer
+
+    def evaluate_answer(self, user_answer, correct_answer):
+        if user_answer == correct_answer:
+            print("Correct!\n")
+            self.score += 1
         else:
-            print("Weather information not found.")
-    else:
-        print("City not found. Please try again.")
+            print(f"Incorrect! The correct answer is {correct_answer}.\n")
+
+    def play_game(self):
+        random.shuffle(self.questions)
+        for question in self.questions:
+            user_answer = self.present_question(question)
+            self.evaluate_answer(user_answer, question['correct_answer'])
+
+        print(f"Your final score is: {self.score}/{len(self.questions)}")
+
+    def play_again(self):
+        return input("Do you want to play again? (yes/no): ").lower() == 'yes'
 
 def main():
-    city = input("Enter the name of a city or a zip code: ")
-    get_weather_data(city)
+    questions = [
+        {'question': 'What is the capital of France?', 'choices': ['A. Paris', 'B. Rome', 'C. Berlin', 'D. Madrid'], 'correct_answer': '1'},
+        {'question': 'What is the largest mammal?', 'choices': ['A. Elephant', 'B. Blue Whale', 'C. Giraffe', 'D. Tiger'], 'correct_answer': '2'},
+        # Add more questions as needed
+    ]
+
+    game = QuizGame(questions)
+
+    while True:
+        game.play_game()
+        if not game.play_again():
+            print("Thanks for playing! Goodbye!")
+            break
 
 if __name__ == "__main__":
     main()
